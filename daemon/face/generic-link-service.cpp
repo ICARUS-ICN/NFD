@@ -164,9 +164,15 @@ GenericLinkService::encodeLpFields(const ndn::PacketBase& netPkt, lp::Packet& lp
   }
 
   if (m_options.enableGeoTags) {
-    auto geoTag = m_options.enableGeoTags();
+    auto geoTag = netPkt.getTag<lp::GeoTag>();
+
     if (geoTag != nullptr) {
       lpPacket.add<lp::GeoTagField>(*geoTag);
+    } else {
+      geoTag = m_options.enableGeoTags();
+      if (geoTag != nullptr) {
+        lpPacket.add<lp::GeoTagField>(*geoTag);
+      }
     }
   }
 }
